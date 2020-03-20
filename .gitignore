@@ -2,3 +2,5 @@
 *.depend
 *.cbp
 *.layout
+*.o
+*.exe
