@@ -1,0 +1,4 @@
+# this is our git ignore
+*.depend
+*.cbp
+*.layout
