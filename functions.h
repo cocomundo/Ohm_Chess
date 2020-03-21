@@ -5,8 +5,7 @@ void gamestart(bool *p_to_move, int board[]);
 void move_f(bool *p_to_move, int board[]);
 
 void white_P(int board[], int pos, int dir[]);
-void white_Kn(int board[], int pos, int dir[]);
-void white_Ki(int board[], int pos, int dir[]);
+void white_Kn_Ki(int board[], int pos, int dir[]);
 void white_R_Q_B(int board[],int pos, int dir[]);
 void pos_eval(int board[]);
 
