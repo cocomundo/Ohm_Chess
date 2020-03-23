@@ -1,2 +1,2 @@
 # Ohm_Chess
-chess-enginge
+chess-engine
