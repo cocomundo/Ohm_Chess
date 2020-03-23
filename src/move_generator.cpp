@@ -11,6 +11,7 @@ void move_gen(Position position) //calculate further possible moves
     int dir_Q_Ki[9]={8,-1,1,-9,9,-10,10,-11,11};
     int dir_Kn[9]={8,12,-12,21,-21,8,-8,19,-19};
     int dir_wP[5]={4,-10,-20,-9,-11};
+    int dir_bP[5]={4,10,20,9,11};
     if (position.b_w == 1) //if white is to move or black
     {
         for(int i=20; i < 100; i++)
@@ -30,29 +31,24 @@ void move_gen(Position position) //calculate further possible moves
                         break;
                 case 6:white_Ki(position.board, position.long_castle_w, position.short_castle_w, i, dir_Q_Ki);//Knight and King have same move-function but different directions
                         break;
+                case 11:black_P(position.board, i, dir_bP);
+                        break;
+                case 12:black_Kn(position.board, i, dir_Kn);
+                        break;
+                case 13:black_R_Q_B(position.board, i, dir_B);
+                        break;
+                case 14:black_R_Q_B(position.board, i, dir_R);
+                        break;
+                case 15:black_R_Q_B(position.board, i, dir_Q_Ki);
+                        break;
+                case 16:black_Ki(position.board, position.long_castle_b, position.short_castle_b, i, dir_Q_Ki);
+                        break;
                 default:break;
             }
         }
-    }/*
-    else()
-    {
-        for(int i=20; i < 100; i++)
-        {
-            switch(board[i])
-            {
-                case 11:schwarzerbauer(i);break;
-                case 12:schwarzerspringer(i);ibreak;
-                case 13:schwarzerlaufer(i);break;
-                case 14:schwarzerturm(i);break;
-                case 15:schwarzedame(i);break;
-                case 16:schwarzerkoenig(i);break;
-                default;break;
-            }
+    }
 
-        }
 
-    }*/
-    //best_move=
 
 }
 void white_R_Q_B(int board[],int pos, int dir[])
@@ -106,7 +102,7 @@ void white_Ki(Position position,int board[],bool long_castle_w, bool short_castl
     for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
     {
         if(board[pos+dir[y]] == 0 || board[pos+dir[y]] > 10) // move or capture
-        {
+
             fig=board[pos+dir[y]]; //Saves captured Piece or empty square
             board[pos+dir[y]]=board[pos];
             board[pos]=0;
@@ -114,24 +110,38 @@ void white_Ki(Position position,int board[],bool long_castle_w, bool short_castl
             board[pos]=board[pos+dir[y]]; // Returns moved Piece to old Position
             board[pos+dir[y]]=fig; // Returns captured Piece or empty square
         }
-    }
+
     if(long_castle_w==1&&pos==95&&board[94]==0&&board[93]==0&&board[92]==0&&board[91]==4)
     {
-        position
+
         board[91]=0;
         board[93]=6;
         board[94]=4;
         board[95]=0;
-        pos_eval();
+        pos_eval(board);
         position.get_new_pos(board);
         board[91]=4;
         board[93]=0;
         board[94]=0;
         board[95]=6;
     }
+    if(short_castle_w==1&&pos==95&&board[96]==0&&board[97]==0&&board[98]==4)
+    {
+
+        board[95]=0;
+        board[96]=4;
+        board[97]=6;
+        board[98]=0;
+        pos_eval(board);
+        position.get_new_pos(board);
+        board[95]=6;
+        board[96]=0;
+        board[97]=0;
+        board[98]=4;
+    }
 
 }
-void white_P(int board[], int pos, int dir[]) ///en passant fehlt noch
+void white_P(int board[], int pos, int dir[]) // en passant fehlt noch
 {
     int fig=0;
     if(board[pos+dir[1]]==0)//1 Forward
@@ -145,6 +155,7 @@ void white_P(int board[], int pos, int dir[]) ///en passant fehlt noch
                 pos_eval(board);
             }
             board[pos+dir[1]]=0;
+            board[pos]=1;
         }
         else
         {
@@ -157,6 +168,178 @@ void white_P(int board[], int pos, int dir[]) ///en passant fehlt noch
 
     }
     if(board[pos+dir[1]]==0 && board[pos+dir[2]] && pos > 80)//2 Forward if Pawn is still on the 2nd Rank
+    {
+        board[pos+dir[2]]=board[pos]; // move 2
+        board[pos]=0;
+        pos_eval(board); // Evaluation of the Position
+        board[pos]=board[pos+dir[2]]; // Returns moved Piece to old Position
+        board[pos+dir[2]]=0;
+    }
+    if(board[pos+dir[3]] > 10) // capture
+    {
+        if(pos+dir[3] < 30) // promotion
+        {
+            fig=board[pos+dir[3]];
+            board[pos]=0;
+            for(int i=2;i<=5;i++)
+            {
+                board[pos]=i;
+                pos_eval(board);
+            }
+            board[pos+dir[3]]=fig;
+        }else
+        {
+            board[pos+dir[3]]=board[pos];
+            board[pos]=0;
+            pos_eval(board); // Evaluation of the Position
+            board[pos]=board[pos+dir[3]]; // Returns moved Piece to old Position
+            board[pos+dir[3]]=0;
+        }
+
+    }
+    if(board[pos+dir[4]] > 10) // capture
+    {
+
+        if(pos+dir[4] < 30) // promotion
+        {
+            fig=board[pos+dir[4]];
+            board[pos]=0;
+            for(int i=2;i<=5;i++)
+            {
+                board[pos]=i;
+                pos_eval(board);
+            }
+            board[pos+dir[4]]=fig;
+        }
+        else
+        {
+            board[pos+dir[4]]=board[pos];
+            board[pos]=0;
+            pos_eval(board); // Evaluation of the Position
+            board[pos]=board[pos+dir[4]]; // Returns moved Piece to old Position
+            board[pos+dir[4]]=0;
+        }
+    }
+}
+
+/********************* black Pieces ***************/
+void black_R_Q_B(int board[],int pos, int dir[])
+{
+    int copy_pos=pos;
+    int fig;
+    for(int y=1; y<=dir[0]; y++)
+    {
+        while(board[copy_pos+dir[y]] == 0 || (board[copy_pos+dir[y]]< 10&&board[copy_pos+dir[y]]>0)) // move or capture
+        {
+            if (board[copy_pos+dir[y]]< 10&&board[copy_pos+dir[y]]>0);
+            {
+                fig=board[copy_pos+dir[y]];
+                board[copy_pos+dir[y]]=board[pos];
+                board[pos]=0;
+                pos_eval(board);
+                board[pos]=board[copy_pos+dir[y]];
+                board[copy_pos+dir[y]]=fig;
+                break;//If Piece is captured cant move further
+            }
+
+            board[copy_pos+dir[y]]=board[pos];
+            board[pos]=0;
+            pos_eval(board);
+            board[pos]=board[copy_pos+dir[y]];
+            board[copy_pos+dir[y]]=fig;
+            copy_pos+=dir[y];
+        }
+        copy_pos=pos;
+    }
+}
+void black_Kn(int board[], int pos,int dir[])
+{
+    int fig;
+    for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
+    {
+        if(board[pos+dir[y]] == 0 || (board[pos+dir[y]]< 10&&board[pos+dir[y]]>0)) // move or capture
+        {
+            fig=board[pos+dir[y]]; //Saves captured Piece or empty square
+            board[pos+dir[y]]=board[pos];
+            board[pos]=0;
+            pos_eval(board); // Evaluation of the Position
+            board[pos]=board[pos+dir[y]]; // Returns moved Piece to old Position
+            board[pos+dir[y]]=fig; // Returns captured Piece or empty square
+        }
+    }
+}
+void black_Ki(Position position,int board[],bool long_castle_b, bool short_castle_b, int pos,int dir[])
+{
+    int fig;
+    for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
+    {
+        if(board[pos+dir[y]] == 0 || (board[pos+dir[y]]< 10&&board[pos+dir[y]]>0)) // move or capture
+        {
+            fig=board[pos+dir[y]]; //Saves captured Piece or empty square
+            board[pos+dir[y]]=board[pos];
+            board[pos]=0;
+            pos_eval(board); // Evaluation of the Position
+            board[pos]=board[pos+dir[y]]; // Returns moved Piece to old Position
+            board[pos+dir[y]]=fig; // Returns captured Piece or empty square
+        }
+
+    }
+    if(long_castle_b==1&&pos==25&&board[24]==0&&board[23]==0&&board[22]==0&&board[21]==4)
+    {
+        board[21]=0;
+        board[23]=6;
+        board[24]=4;
+        board[25]=0;
+        pos_eval(board);
+        position.get_new_pos(board);
+        board[21]=4;
+        board[23]=0;
+        board[24]=0;
+        board[25]=6;
+    }
+    if(short_castle_b==1&&pos==25&&board[26]==0&&board[27]==0&&board[28]==4)
+    {
+
+        board[25]=0;
+        board[26]=4;
+        board[27]=6;
+        board[28]=0;
+        pos_eval(board);
+        position.get_new_pos(board);
+        board[25]=6;
+        board[26]=0;
+        board[27]=0;
+        board[28]=4;
+    }
+
+}
+void black_P(int board[], int pos, int dir[]) // en passant fehlt noch
+{
+    int fig=0;
+    if(board[pos+dir[1]]==0)//1 Forward
+    {
+        if(pos+dir[3] > 90) // promotion
+        {
+            board[pos]=0;
+            for(int i=12;i<=15;i++)
+            {
+                board[pos]=i;
+                pos_eval(board);
+            }
+            board[pos+dir[1]]=0;
+            board[pos]=11;
+        }
+        else
+        {
+            board[pos+dir[1]]=board[pos]; //move 1
+            board[pos]=0;
+            pos_eval(board); // Evaluation of the Position
+            board[pos]=board[pos+dir[1]]; // Returns moved Piece to old Position
+            board[pos+dir[1]]=0;
+        }
+
+    }
+    if(board[pos+dir[1]]==0 && board[pos+dir[2]] && pos < 30)//2 Forward if Pawn is still on the 2nd Rank
     {
         board[pos+dir[2]]=board[pos]; // move 2
         board[pos]=0;

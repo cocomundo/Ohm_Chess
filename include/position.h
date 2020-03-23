@@ -16,19 +16,19 @@ class Position
         void get_new_pos(int board[]);
         Position *p_next_pos[200]; // max. possible move count
 
-/*
-    12x10 Board Setting
-    -1 = illegal Square
-    0 = empty Square
-    <10 White Piece
-    >10 Black Piece
-    1 = Pawn
-    2 = Knight
-    3 = Bishop
-    4 = Rook
-    5 = Queen
-    6 = King
-    */
+/******************************************
+            12x10 Board Setting
+            -1 = illegal Square
+            0 = empty Square
+            <10 White Piece
+            >10 Black Piece
+            1 = Pawn
+            2 = Knight
+            3 = Bishop
+            4 = Rook
+            5 = Queen
+            6 = King
+********************************************/
         int board[120] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                -1,14,12,13,15,16,13,12,14,-1,
