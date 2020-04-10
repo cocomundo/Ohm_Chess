@@ -7,14 +7,15 @@ class Position
     public:
         Position();
         ~Position();
+        int depths=0;
         bool b_w=0; // move of black=1 or white=0
         bool short_castle_b=1; // is short_castle still allowed
         bool long_castle_b=1; // is short_castle still allowed
         bool short_castle_w=1; // is short_castle still allowed
         bool long_castle_w=1; // is short_castle still allowed
         int pos_eval=0;
-        void get_new_pos(int board[]);
-        Position *p_next_pos[200]; // max. possible move count
+        //void get_new_pos(int board[]);
+        //Position *p_next_pos[200]; // max. possible move count
 
 /******************************************
             12x10 Board Setting

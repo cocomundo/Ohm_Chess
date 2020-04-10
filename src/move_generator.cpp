@@ -3,10 +3,12 @@
 
 #include <iomanip>
 #include <iostream>
-
+#define MAXDEPTHS 5
 void move_gen(Position position, Direction directions) //calculate further possible moves
 //bool *p_to_move,int board[]
 {
+    position.depths++;
+    printf("Tiefe: %d\n", depths);
     /*
     int dir_B[5]={4,-9,9,-11,11};
     int dir_R[5]={4,-1,1,-10,10};
@@ -126,7 +128,15 @@ void white_R_Q_B(int board[],int pos, int dir[])
                 fig=board[copy_pos+dir[y]];
                 board[copy_pos+dir[y]]=board[pos];
                 board[pos]=0;
-                pos_eval(board);
+                if(depths<MAXDEPTHS)
+                {
+                    move_gen(position);
+                }
+                else if(depths==MAXDEPTHS)
+                    pos_eval(board);
+                else
+                    std::cout<<ERROR<<endl;
+
                 board[pos]=board[copy_pos+dir[y]];
                 board[copy_pos+dir[y]]=fig;
                 break;//If Piece is captured cant move further
@@ -468,7 +478,6 @@ void pos_eval(int board[])
 {
     std::cout << "fig gezogen"<< std::endl;
     int evaluation=0;
-    //if(pos is good)
     for(int i=20;i<100;i++)
     {
         switch(board[i])
@@ -487,6 +496,7 @@ void pos_eval(int board[])
             case 16: evaluation-=10000;break;
             default: break;
         }
+
     }
     std::cout<<evaluation<<std::endl;
 

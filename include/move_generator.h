@@ -22,6 +22,8 @@ void black_Ki(int board[], bool long_c, bool short_c, int pos, int dir[]);
 
 void pos_eval(int board[]);
 
+static int depth=0;
+
 /*
 weisserbauer(i);
 weisserspringer(i);
