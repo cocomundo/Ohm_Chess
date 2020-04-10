@@ -3,4 +3,5 @@
 *.cbp
 *.layout
 *.o
+*.txt
 *.exe
