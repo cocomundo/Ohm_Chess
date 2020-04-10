@@ -9,6 +9,6 @@ int main()
 {
     Direction directions;
     Position positionstart;
-    move_gen(positionstart, directions);
+    move_gen(positionstart);
     return 0;
 }

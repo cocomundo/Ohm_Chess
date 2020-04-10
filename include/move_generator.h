@@ -6,23 +6,22 @@
 #define MAX_FIELD 120
 
 void gamestart(bool *p_to_move, int board[]);
-void move_gen(Position position, Direction directions);
+void move_gen(Position position);
 //void test_move(int board[],int pos,int new_pos);
 
-bool chess_check(int board[], bool move_b_w);
-void white_P(int board[], int pos, int dir[]);
-void white_Kn(int board[], int pos, int dir[]);
-void white_R_Q_B(int board[],int pos, int dir[]);
-void white_Ki(int board[], bool long_c, bool short_c, int pos, int dir[]);
+bool chess_check(Position position, bool move_b_w);
+void white_P(Position position, int pos, int dir[]);
+void white_Kn(Position position, int pos, int dir[]);
+void white_R_Q_B(Position position,int pos, int dir[]);
+void white_Ki(Position position, bool long_c, bool short_c, int pos, int dir[]);
 
-void black_P(int board[], int pos, int dir[]);
-void black_Kn(int board[], int pos, int dir[]);
-void black_R_Q_B(int board[], int pos, int dir[]);
-void black_Ki(int board[], bool long_c, bool short_c, int pos, int dir[]);
+void black_P(Position position, int pos, int dir[]);
+void black_Kn(Position position, int pos, int dir[]);
+void black_R_Q_B(Position position, int pos, int dir[]);
+void black_Ki(Position position, bool long_c, bool short_c, int pos, int dir[]);
 
-void pos_eval(int board[]);
+int pos_eval(int board[]);
 
-static int depth=0;
 
 /*
 weisserbauer(i);

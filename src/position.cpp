@@ -9,7 +9,8 @@ Position::~Position()
 {
     //dtor
 }
-void Position::get_new_pos(int board[])
+/*void Position::get_new_pos(int board[])
 {
 
 }
+*/
