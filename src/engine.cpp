@@ -7,8 +7,9 @@
 
 int main()
 {
+    int depth=0;
     Direction directions;
     Position positionstart;
-    move_gen(positionstart);
+    move_gen(positionstart, depth);
     return 0;
 }

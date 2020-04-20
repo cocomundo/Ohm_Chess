@@ -4,11 +4,10 @@
 #include <iomanip>
 #include <iostream>
 #define MAXDEPTHS 5
-void move_gen(Position position) //calculate further possible moves
+void move_gen(Position position, int depth) //calculate further possible moves
 //bool *p_to_move,int position.board[]
 {
-    position.depths++;
-    printf("Tiefe: %d\n", position.depths);
+    printf("Tiefe: %d\n",depth);
 
     int dir_B[5]={4,-9,9,-11,11};
     int dir_R[5]={4,-1,1,-10,10};
@@ -28,17 +27,17 @@ void move_gen(Position position) //calculate further possible moves
             switch(position.board[i])
             {
 
-                case 1:white_P(position, i, dir_wP);
+                case 1:white_P(position, i, dir_wP, depth);
                         break;
-                case 2:white_Kn(position, i, dir_Kn);//Knight and King have same move-function but different directions
+                case 2:white_Kn(position, i, dir_Kn, depth);//Knight and King have same move-function but different directions
                         break;
-                case 3:white_R_Q_B(position, i, dir_B); //Rook, Queen and Bishop have same move-function but different directions
+                case 3:white_R_Q_B(position, i, dir_B, depth); //Rook, Queen and Bishop have same move-function but different directions
                         break;
-                case 4:white_R_Q_B(position, i, dir_R); //Rook, Queen and Bishop have same move-function but different directions
+                case 4:white_R_Q_B(position, i, dir_R, depth); //Rook, Queen and Bishop have same move-function but different directions
                         break;
-                case 5:white_R_Q_B(position, i, dir_Q_Ki); //Rook, Queen and Bishop have same move-function but different directions
+                case 5:white_R_Q_B(position, i, dir_Q_Ki, depth); //Rook, Queen and Bishop have same move-function but different directions
                         break;
-                case 6:white_Ki(position, position.long_castle_w, position.short_castle_w, i, dir_Q_Ki);//Knight and King have same move-function but different directions
+                case 6:white_Ki(position, position.long_castle_w, position.short_castle_w, i, dir_Q_Ki, depth);//Knight and King have same move-function but different directions
                         break;
                 default:break;
             }
@@ -52,17 +51,17 @@ void move_gen(Position position) //calculate further possible moves
 
             switch(position.board[i])
             {
-                case 11:black_P(position, i, dir_bP);
+                case 11:black_P(position, i, dir_bP, depth);
                         break;
-                case 12:black_Kn(position, i, dir_Kn);
+                case 12:black_Kn(position, i, dir_Kn, depth);
                         break;
-                case 13:black_R_Q_B(position, i, dir_B);
+                case 13:black_R_Q_B(position, i, dir_B, depth);
                         break;
-                case 14:black_R_Q_B(position, i, dir_R);
+                case 14:black_R_Q_B(position, i, dir_R, depth);
                         break;
-                case 15:black_R_Q_B(position, i, dir_Q_Ki);
+                case 15:black_R_Q_B(position, i, dir_Q_Ki, depth);
                         break;
-                case 16:black_Ki(position, position.long_castle_b, position.short_castle_b, i, dir_Q_Ki);
+                case 16:black_Ki(position, position.long_castle_b, position.short_castle_b, i, dir_Q_Ki, depth);
                         break;
                 default:break;
             }
@@ -122,7 +121,7 @@ int m_dir_B[5]={4,-9,9,-11,11};
         int m_dir_wP[5]={4,-10,-20,-9,-11};
         int m_dir_bP[5]={4,10,20,9,11};
 
-void white_R_Q_B(Position position,int pos, int dir[])
+void white_R_Q_B(Position position,int pos, int dir[], int depth)
 {
 
     int copy_pos=pos;
@@ -138,7 +137,7 @@ void white_R_Q_B(Position position,int pos, int dir[])
                 position.board[pos]=0;
                 if(position.depths<MAXDEPTHS)
                 {
-                    move_gen(position);
+                    move_gen(position, depth);
                 }
                 else if(position.depths==MAXDEPTHS)
                     pos_eval(position.board);
@@ -154,7 +153,7 @@ void white_R_Q_B(Position position,int pos, int dir[])
             position.board[pos]=0;
             if(position.depths<MAXDEPTHS)
                 {
-                    move_gen(position);
+                    move_gen(position, depth);
                 }
                 else if(position.depths==MAXDEPTHS)
                     pos_eval(position.board);
@@ -167,9 +166,9 @@ void white_R_Q_B(Position position,int pos, int dir[])
         copy_pos=pos;
     }
 }
-void white_Kn(Position position, int pos,int dir[])
+void white_Kn(Position position, int pos,int dir[], int depth)
 {
-    int fig;
+    int fig, eval, bestmoveeval, remembermove;
     for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
     {
         if(position.board[pos+dir[y]] == 0 || position.board[pos+dir[y]] > 10) // move or capture
@@ -177,27 +176,27 @@ void white_Kn(Position position, int pos,int dir[])
             fig=position.board[pos+dir[y]]; //Saves captured Piece or empty square
             position.board[pos+dir[y]]=position.board[pos];
             position.board[pos]=0;
-            if(position.depths<MAXDEPTHS)
+            if(depth<MAXDEPTHS)
+            {
+                move_gen(position, depth+1);
+            }
+            else if(position.depths==MAXDEPTHS)
+            {
+                eval=pos_eval(position.board);
+                if(eval>bestmoveeval)
                 {
-                    move_gen(position);
+                    bestmoveeval=eval;
+                   bestmove=thisone;
                 }
-                else if(position.depths==MAXDEPTHS)
-                    {
-                    eval=pos_eval(position.board)
-                    if(eval>bestmoveeval)
-                    {
-                        bestmoveeval=eval;
-                        remembermove=thisone;
-                    }
-                    }
-                else
-                    std::cout<<"ERROR"<<std::endl;
+            }
+            else
+                std::cout<<"ERROR"<<std::endl;
             position.board[pos]=position.board[pos+dir[y]]; // Returns moved Piece to old Position
             position.board[pos+dir[y]]=fig; // Returns captured Piece or empty square
         }
     }
 }
-void white_Ki(Position position,bool long_castle_w, bool short_castle_w, int pos,int dir[])
+void white_Ki(Position position,bool long_castle_w, bool short_castle_w, int pos,int dir[], int depth)
 {
     int fig;
     for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
@@ -262,7 +261,7 @@ void white_Ki(Position position,bool long_castle_w, bool short_castle_w, int pos
     }
 
 }
-void white_P(Position position, int pos, int dir[]) // en passant fehlt noch
+void white_P(Position position, int pos, int dir[], int depth) // en passant fehlt noch
 {
     int fig=0;
     if(position.board[pos+dir[1]]==0)//1 Forward
@@ -393,7 +392,7 @@ void white_P(Position position, int pos, int dir[]) // en passant fehlt noch
 }
 
 /********************* black Pieces ***************/
-void black_R_Q_B(Position position,int pos, int dir[])
+void black_R_Q_B(Position position,int pos, int dir[], int depth)
 {
     int copy_pos=pos;
     int fig;
@@ -436,7 +435,7 @@ void black_R_Q_B(Position position,int pos, int dir[])
         copy_pos=pos;
     }
 }
-void black_Kn(Position position, int pos,int dir[])
+void black_Kn(Position position, int pos,int dir[], int depth)
 {
     int fig;
     for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
@@ -459,7 +458,7 @@ void black_Kn(Position position, int pos,int dir[])
         }
     }
 }
-void black_Ki(Position position,bool long_castle_b, bool short_castle_b, int pos,int dir[])
+void black_Ki(Position position,bool long_castle_b, bool short_castle_b, int pos,int dir[], int depth)
 {
     int fig;
     for(int y=1; y<=dir[0]; y++) //first position of "dir" gives amount of directions
@@ -523,7 +522,7 @@ void black_Ki(Position position,bool long_castle_b, bool short_castle_b, int pos
     }
 
 }
-void black_P(Position position, int pos, int dir[]) // en passant fehlt noch
+void black_P(Position position, int pos, int dir[], int depth) // en passant fehlt noch
 {
     int fig=0;
     if(position.board[pos+dir[1]]==0)//1 Forward
