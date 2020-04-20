@@ -1,3 +1,4 @@
+/*
 #include "move_generator.h"
 #include "position.h"
 
@@ -113,7 +114,7 @@ bool chess_check(int position.board[], bool move_b_w, Direction directions)
 
     }
 }
-*/
+
 int m_dir_B[5]={4,-9,9,-11,11};
         int m_dir_R[5]={4,-1,1,-10,10};
         int m_dir_Q_Ki[9]={8,-1,1,-9,9,-10,10,-11,11};
@@ -391,7 +392,7 @@ void white_P(Position position, int pos, int dir[], int depth) // en passant feh
     }
 }
 
-/********************* black Pieces ***************/
+/********************* black Pieces ***************
 void black_R_Q_B(Position position,int pos, int dir[], int depth)
 {
     int copy_pos=pos;
@@ -661,7 +662,7 @@ void test_move(int position.board[],int pos,int new_pos)
     position.board[pos]=position.board[new_pos]; // Returns moved Piece to old Position
     position.board[new_pos]]=0;
     position.board[new_pos]=fig;
-}*/
+}
 
 int pos_eval(int board[])
 {

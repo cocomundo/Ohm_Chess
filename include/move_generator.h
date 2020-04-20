@@ -1,4 +1,4 @@
-#ifndef MOVE_GENERATOR_H_INCLUDED
+/*#ifndef MOVE_GENERATOR_H_INCLUDED
 #define MOVE_GENERATOR_H_INCLUDED
 
 #include "position.h"
@@ -29,5 +29,6 @@ weisserspringer(i);
 
 weisserdame(i);
 weisserkoenig(i);
-*/
+
 #endif
+*/
