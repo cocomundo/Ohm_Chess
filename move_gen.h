@@ -2,7 +2,7 @@
 #define MOVE_GEN_H_INCLUDED
 
 //move_gen recursive function
-int move_gen(int board[], int depth, int alpha, int beta, bool black_white );
+int move_gen(int board[], int depth, int alpha, int beta, bool black_or_white );
 
 //change pos of a piece and change back
 void change_pos(int board[], int new_pos, int old_pos, int *copy_piece);

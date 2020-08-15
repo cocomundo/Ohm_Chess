@@ -5,7 +5,7 @@
 #include <limits.h> // INT_MIN, INT_MAX
 
 
-#define MAXDEPTH 7
+#define MAXDEPTH 2
 
 int main()
 {
