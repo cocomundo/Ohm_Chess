@@ -8,6 +8,10 @@ int move_gen(int board[], int depth, int alpha, int beta, bool black_or_white );
 void change_pos(int board[], int new_pos, int old_pos, int *copy_piece);
 void change_pos_back(int board[], int new_pos, int old_pos, int copy_piece);
 
+//change pos for enpassant white and change back
+void change_pos_enpassant_white(int board[], int new_pos, int old_pos, int *copy_piece);
+void change_pos_back_enpassant_white(int board[], int new_pos, int old_pos,int copy_piece);
+
 //piece functions
 int white_R_Q_B(int board[], int pos, int dir[], int depth, int alpha, int beta);
 int white_Kn(int board[], int pos, int dir[], int depth, int alpha, int beta);

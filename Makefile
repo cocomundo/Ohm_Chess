@@ -1,7 +1,7 @@
 # Variables to control Makefile operation
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++14 -g
+CXXFLAGS = -Wall -Wextra -std=c++14 -O2
 
 TARGET_TOOL := chess
 

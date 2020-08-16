@@ -21,17 +21,81 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
     int eval = 0;
     int copy_piece = 0;
     int copy_pos = 0;
+    int enpassant_square_black = -1;
+    int enpassant_square_white = -1;
 
     if( black_or_white) { //white
-        int max = INT_MIN; //static ?
+        int max = INT_MIN;
                          // min/max compare value muss an die piece_functions nicht übergeben werden,
                          // da der return value direkt nach aufruf nochmal gecheckt wird (vgl. max = (eval > max ? eval : max))
 
         for (int square = 20; square < 100; square++){
             switch (board[square]) {
-                /*case 1:eval = white_P( board, i, dir_wP, depth -1);
-                        max = (eval > max ? eval : max);
-                        break;*/
+                case 1: // Pawn
+                        if(board[square+dir_wP[1]] == 0) {
+                            if(square+dir_wP[1] < 30) {
+                                // promotion
+                                change_pos(board, square+dir_wP[1], square, &copy_piece);
+                                // decide between Queen, Rook, Bishop and Knight what piece is the best
+                                for(int i = 2; i < 6; i++)
+                                {
+                                    board[square] = i;
+                                    eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
+                                    max = (eval > max ? eval : max);
+                                }
+                                change_pos_back(board, square+dir_wP[1], square, copy_piece);
+                            }else if((board[square+dir_wP[2]]==0) && square > 80) {
+                                // move two squares, if still on 2nd rang
+                                change_pos(board, square+dir_wP[2], square, &copy_piece);
+                                enpassant_square_white = square+dir_wP[2];
+
+                                eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
+                                max = (eval > max ? eval : max);
+
+                                change_pos_back(board, square+dir_wP[2], square, copy_piece);
+                            }else {
+                                // move one square
+                                change_pos(board, square+dir_wP[1], square, &copy_piece);
+
+                                eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
+                                max = (eval > max ? eval : max);
+
+                                change_pos_back(board, square+dir_wP[1], square, copy_piece);
+                            }
+                        }
+                        for(int y = 2; y < 4; y++) {
+                            if(board[square+dir_wP[y]] > 10) {
+                                if(square+dir_wP[y] < 30) {
+                                    //capture into promotion
+                                    change_pos(board, square+dir_wP[y], square, &copy_piece);
+                                    for(int i = 2; i < 6; i++)
+                                    {
+                                        board[square] = i;
+                                        eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
+                                        max = (eval > max ? eval : max);
+                                    }
+                                    change_pos_back(board, square+dir_wP[y], square, copy_piece);
+                                }else {
+                                    //capture
+                                    change_pos(board, square+dir_wP[y], square, &copy_piece);
+                                    eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
+                                    max = (eval > max ? eval : max);
+
+                                    change_pos_back(board, square+dir_wP[y], square, copy_piece);
+                                }
+
+                            }
+                        }
+                        if( ( (enpassant_square_black - square)== 1 ||
+                              (enpassant_square_black - square) == -1 ) &&
+                              (board[enpassant_square_black - 10] == 0) ){
+                            // en passant
+                            change_pos_enpassant_white(board, enpassant_square_black, square, &copy_piece );
+                            eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
+                            max = (eval > max ? eval : max);
+                            change_pos_back_enpassant_white(board, enpassant_square_black, square, copy_piece );
+                        }
+                        break;
                 case 2: // Knight
                         for(int y = 1; y <= dir_Kn[0]; y++) {
                             //move or capture
@@ -40,9 +104,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                 eval = move_gen(board, depth-1, alpha, beta, false); //after white move -> black move -> false
                                 max = (eval > max ? eval : max);
+/*
                                 alpha = (alpha > eval ? alpha : eval);
                                 if (beta <= alpha)
                                     square = 100;
+*/
 
                                 change_pos_back(board, square+dir_Kn[y], square, copy_piece);
                             }
@@ -58,9 +124,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                     eval = move_gen(board, depth - 1, alpha, beta, false); //after white move -> black move
                                     max = (eval > max ? eval : max);
+/*
                                     alpha = (alpha > eval ? alpha : eval);
                                     if (beta <= alpha)
                                         square = 100;
+*/
 
                                     change_pos_back(board, (copy_pos+dir_B[y]), square, copy_piece);
                                     // Stop, because a piece is captured
@@ -91,9 +159,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                     eval = move_gen(board, depth - 1, alpha, beta, false); //after white move -> black move
                                     max = (eval > max ? eval : max);
+/*
                                     alpha = (alpha > eval ? alpha : eval);
                                     if (beta <= alpha)
                                         square = 100;
+*/
 
                                     change_pos_back(board, (copy_pos+dir_R[y]),square , copy_piece);
                                     break; // Stop, because a piece is captured
@@ -102,9 +172,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                 eval = move_gen(board, depth -1, alpha, beta, false);
                                 max = (eval > max ? eval : max);
+/*
                                 alpha = (alpha > eval ? alpha : eval);
                                 if (beta <= alpha)
                                     square = 100;
+*/
 
                                 change_pos_back(board, copy_pos+dir_R[y], square, copy_piece);
                                 copy_pos += dir_R[y];
@@ -123,9 +195,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                     eval = move_gen(board, depth - 1, alpha, beta, false); //after white move -> black move
                                     max = (eval > max ? eval : max);
+/*
                                     alpha = (alpha > eval ? alpha : eval);
                                     if (beta <= alpha)
                                         square = 100;
+*/
 
                                     change_pos_back(board, (copy_pos+dir_Q_Ki[y]),square , copy_piece);
                                     break; // Stop, because a piece is captured
@@ -159,11 +233,67 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
         int min = INT_MAX;        
 
         for (int square = 20; square < 100; square++) {
-
             switch (board[square]) {
-                /*case 11:eval = black_P( board,i, dir_bP, depth -1);
-                        min = (eval > min ? eval : min);
-                        break;*/
+                case 11:// Pawn
+                        if(board[square+dir_bP[1]] == 0) {
+                            if(square+dir_bP[1] > 90) {
+                                // promotion
+                                change_pos(board, square+dir_bP[1], square, &copy_piece);
+                                // decide between Queen, Rook, Bishop and Knight what piece is the best
+                                for(int i = 12; i < 16; i++)
+                                {
+                                    board[square] = i;
+                                    eval = move_gen(board, depth-1, alpha, beta, true); //after black move -> white move -> true
+                                    min = (eval < min ? eval : min);
+                                }
+                                change_pos_back(board, square+dir_wP[1], square, copy_piece);
+                            }else if((board[square+dir_wP[2]] == 0) && square < 40) {
+                                // move two squares, if still on 2nd rang
+                                change_pos(board, square+dir_wP[2], square, &copy_piece);
+                                enpassant_square_black = square+dir_wP[2];
+                                eval = move_gen(board, depth-1, alpha, beta, true); //after black move -> white move -> true
+                                min = (eval < min ? eval : min);
+                                change_pos_back(board, square+dir_wP[2], square, copy_piece);
+                            }else {
+                                // move one square
+                                change_pos(board, square+dir_wP[1], square, &copy_piece);
+                                eval = move_gen(board, depth-1, alpha, beta, true); //after black move -> white move -> true
+                                min = (eval < min ? eval : min);
+                                change_pos_back(board, square+dir_wP[1], square, copy_piece);
+                            }
+                        }
+                        for(int y = 2; y < 4; y++) {
+                            if(board[square+dir_wP[y]] < 10 && board[square+dir_wP[y]] > 0) {
+                                if(square+dir_wP[y] > 90) {
+                                    //capture into promotion
+                                    change_pos(board, square+dir_wP[y], square, &copy_piece);
+                                    for(int i = 12; i < 16; i++)
+                                    {
+                                        board[square] = i;
+                                        eval = move_gen(board, depth-1, alpha, beta, true); //after black move -> white move -> true
+                                        min = (eval < min ? eval : min);
+                                    }
+                                    change_pos_back(board, square+dir_wP[y], square, copy_piece);
+                                }else {
+                                    //capture
+                                    change_pos(board, square+dir_wP[y], square, &copy_piece);
+                                    eval = move_gen(board, depth-1, alpha, beta, true); //after white move -> black move -> false
+                                    min = (eval < min ? eval : min);
+                                    change_pos_back(board, square+dir_wP[y], square, copy_piece);
+                                }
+
+                            }
+                        }
+                        if( ( (enpassant_square_white - square)== 1 ||
+                              (enpassant_square_white - square) == -1 ) &&
+                              (board[enpassant_square_white - 10] == 0) ){
+                            // en passant
+                            change_pos_enpassant_white(board, enpassant_square_black, square, &copy_piece );
+                            eval = move_gen(board, depth-1, alpha, beta, true); //after white move -> black move -> false
+                            min = (eval < min ? eval : min);
+                            change_pos_back_enpassant_white(board, enpassant_square_black, square, copy_piece );
+                        }
+                        break;
                 case 12:// Knight
                         for(int y = 1; y <= dir_Kn[0]; y++) {
                             //move or capture
@@ -172,10 +302,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                 eval = move_gen(board, depth-1, alpha, beta, true); //after white move -> black move -> false
                                 min = (eval < min ? eval : min);
+/*
                                 beta = (beta < eval ? beta : eval);
                                 if (beta <= alpha)
                                     square = 100;
-
+*/
                                 change_pos_back(board, square+dir_Kn[y], square, copy_piece);
                             }
                         }
@@ -190,9 +321,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                     eval = move_gen(board, depth -1, alpha, beta, true);
                                     min = (eval < min ? eval : min);
+/*
                                     beta = (beta < eval ? beta : eval);
                                     if( beta <= alpha)
                                         square = 100;
+*/
 
                                     change_pos_back(board, (copy_pos+dir_B[y]), square , copy_piece);
                                     break;//If Piece is captured, it cant move further
@@ -233,9 +366,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                 eval = move_gen(board, depth -1, alpha, beta, true);
                                 min = (eval < min ? eval : min);
+/*
                                 beta = (beta < eval ? beta : eval);
                                 if( beta <= alpha)
                                     square = 100;
+*/
 
                                 change_pos_back(board, (copy_pos+dir_R[y]), square, copy_piece);
                                 copy_pos += dir_R[y];
@@ -253,9 +388,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                     eval = move_gen(board, depth -1, alpha, beta, true);
                                     min = (eval < min ? eval : min);
+/*
                                     beta = (beta < eval ? beta : eval);
                                     if( beta <= alpha)
                                         square = 100;
+*/
 
                                     change_pos_back(board, (copy_pos+dir_Q_Ki[y]), square , copy_piece);
                                     break;//If Piece is captured, it cant move further
@@ -264,9 +401,11 @@ int move_gen( int board[], int depth, int alpha, int beta, bool black_or_white )
 
                                 eval = move_gen(board, depth -1, alpha, beta, true);
                                 min = (eval < min ? eval : min);
+/*
                                 beta = (beta < eval ? beta : eval);
                                 if( beta <= alpha)
                                     square = 100;
+*/
 
                                 change_pos_back(board, (copy_pos+dir_Q_Ki[y]), square, copy_piece);
                                 copy_pos += dir_Q_Ki[y];
@@ -301,42 +440,52 @@ void change_pos_back(int board[], int new_pos, int old_pos, int copy_piece)
     board[new_pos] = copy_piece;   
     printf("back\n");
 }
-/* 
-int white_R_Q_B(int board[], int pos, int dir[], int depth, int alpha, int beta)
+void change_pos_enpassant_white(int board[], int new_pos, int old_pos, int *copy_piece)
 {
-    int copy_pos = pos; 
-    int copy_piece = 0, eval, max = INT_MIN;
-    for(int y = 1; y <= dir[0]; y++) { // check every direction the piece can go
-        while(board[copy_pos+dir[y]] == 0 || board[copy_pos+dir[y]] > 10) { // move or capture
-            if (board[copy_pos+dir[y]] > 10) { // capture
-                change_pos(board, (copy_pos+dir[y]), pos, &copy_piece);
+    // save the piece to capture (on the new pos) so it can be returned
+    *copy_piece = board[new_pos - 10];
+    // move the piece from the old position to the new position
+    board[new_pos - 10] = board[old_pos];
+    // now the old position is empty
+    board[old_pos] = 0;
+    // remove the captured pawn
+    board[new_pos] = 0;
 
-                eval = move_gen(board, depth - 1, alpha, beta, false); //after white move -> black move
-                max = (eval > max ? eval : max);
-                alpha = (alpha > eval ? alpha : eval);
-                if (beta <= alpha)
-                    break;
-
-                change_pos_back(board, (copy_pos+dir[y]),pos , copy_piece);
-                break; // Stop, because a piece is captured
-            } 
-            change_pos(board, copy_pos+dir[y], pos, &copy_piece);
-
-            eval = move_gen(board, depth -1, alpha, beta, false);
-            max = (eval > max ? eval : max);
-            alpha = (alpha > eval ? alpha : eval);
-            if (beta <= alpha)
-                break;
-
-            change_pos_back(board, copy_pos+dir[y], pos, copy_piece);
-            copy_pos += dir[y];
-        }
-        //after first direction is done, the copy pos needs to be resettet
-        copy_pos=pos;
-    }
-    return (max);
+    printf("move enpassant\n");
 }
-*/
+void change_pos_back_enpassant_white(int board[], int new_pos, int old_pos,int copy_piece)
+{
+    // move piece back to old spot
+    board[old_pos] = board[new_pos - 10];
+    // set the square to zero
+    board[new_pos - 10] = copy_piece;
+    // put the captured piece back on the board
+    board[new_pos] = 11;
+    printf("back enpassant\n");
+}
+void change_pos_enpassant_black(int board[], int new_pos, int old_pos, int *copy_piece)
+{
+    // save the piece to capture (on the new pos) so it can be returned
+    *copy_piece = board[new_pos + 10];
+    // move the piece from the old position to the new position
+    board[new_pos + 10] = board[old_pos];
+    // now the old position is empty
+    board[old_pos] = 0;
+    // remove the captured pawn
+    board[new_pos] = 0;
+
+    printf("move enpassant\n");
+}
+void change_pos_back_enpassant_black(int board[], int new_pos, int old_pos,int copy_piece)
+{
+    // move piece back to old spot
+    board[old_pos] = board[new_pos + 10];
+    // set the square to zero
+    board[new_pos + 10] = copy_piece;
+    // put the captured piece back on the board
+    board[new_pos] = 1;
+    printf("back enpassant\n");
+}
 /*
 int white_Ki(int board[], bool long_castle_w, bool short_castle_w, int pos,int dir[], int depth) {
     int copy_piece;
@@ -395,186 +544,3 @@ int white_Ki(int board[], bool long_castle_w, bool short_castle_w, int pos,int d
     }
 
 }*/
-
-/*
-void white_P(Position  int pos, int dir[], int depth) { // en passant fehlt noch
-    int copy_piece=0;
-    if(board[pos+dir[1]] == 0) { //1 Forward
-        if(pos+dir[3] < 30) // promotion
-        {
-            board[pos]=0;
-            for(int i=2;i<=5;i++)
-            {
-                board[pos]=i;
-                if(depths<MAXDEPTHS)
-                {
-                    move_gen(position);
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-            }
-            board[pos+dir[1]]=0;
-            board[pos]=1;
-        }
-        else
-        {
-            board[pos+dir[1]]=board[pos]; //move 1
-            board[pos]=0;
-            if(depths<MAXDEPTHS)
-                {
-                    move_gen(;
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-            board[pos]=board[pos+dir[1]]; // Returns moved Piece to old Position
-            board[pos+dir[1]]=0;
-        }
-
-    }
-    if(board[pos+dir[1]]==0 && board[pos+dir[2]==0] && pos > 80)//2 Forward if Pawn is still on the 2nd Rank
-    {
-        board[pos+dir[2]]=board[pos]; // move 2
-        board[pos]=0;
-        if(depths<MAXDEPTHS)
-                {
-                    move_gen(;
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-        board[pos]=board[pos+dir[2]]; // Returns moved Piece to old Position
-        board[pos+dir[2]]=0;
-    }
-    if(board[pos+dir[3]] > 10) // capture
-    {
-        if(pos+dir[3] < 30) // promotion
-        {
-            copy_piece=board[pos+dir[3]];
-            board[pos]=0;
-            for(int i=2;i<=5;i++)
-            {
-                board[pos]=i;
-                if(depths<MAXDEPTHS)
-                {
-                    move_gen(;
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-            }
-            board[pos+dir[3]]=copy_piece;
-        }else
-        {
-            board[pos+dir[3]]=board[pos];
-            board[pos]=0;
-            if(depths<MAXDEPTHS)
-                {
-                    move_gen(;
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-            board[pos]=board[pos+dir[3]]; // Returns moved Piece to old Position
-            board[pos+dir[3]]=0;
-        }
-
-    }
-    if(board[pos+dir[4]] > 10) // capture
-    {
-
-        if(pos+dir[4] < 30) // promotion
-        {
-            copy_piece=board[pos+dir[4]];
-            board[pos]=0;
-            for(int i=2;i<=5;i++)
-            {
-                board[pos]=i;
-                if(depths<MAXDEPTHS)
-                {
-                    move_gen(;
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-            }
-            board[pos+dir[4]]=copy_piece;
-        }
-        else
-        {
-            board[pos+dir[4]]=board[pos];
-            board[pos]=0;
-            if(depths<MAXDEPTHS)
-                {
-                    move_gen(;
-                }
-                else if(depths==MAXDEPTHS)
-                    pos_eval(board);
-                else
-                    std::cout<<"ERROR"<<std::endl;
-            board[pos]=board[pos+dir[4]]; // Returns moved Piece to old Position
-            board[pos+dir[4]]=0;
-        }
-    }
-}*/
-
-/*
-int black_R_Q_B(int board[], int pos, int dir[], int depth, int alpha, int beta) {
-    int copy_pos = pos;
-    int copy_piece, eval, min = INT_MAX;
-    for(int y = 1; y <= dir[0]; y++) {
-        while(board[copy_pos+dir[y]] == 0 || (board[copy_pos+dir[y]] < 10 && board[copy_pos+dir[y]] > 0)) { // move or capture
-            if (board[copy_pos+dir[y]] < 10 && board[copy_pos+dir[y]] > 0) {
-                change_pos(board, (copy_pos+dir[y]), pos, &copy_piece);
-
-                eval = move_gen(board, depth -1, alpha, beta, true);
-                min = (eval < min ? eval : min);
-                beta = (beta < eval ? beta : eval);
-                if( beta <= alpha)
-                    break;
-
-                change_pos_back(board, (copy_pos+dir[y]),pos , copy_piece);
-                break;//If Piece is captured, it cant move further
-            }
-            change_pos(board, (copy_pos+dir[y]), pos, &copy_piece);
-
-            eval = move_gen(board, depth -1, alpha, beta, true);
-            min = (eval < min ? eval : min);
-            beta = (beta < eval ? beta : eval);
-            if( beta <= alpha)
-                break;
-
-            change_pos_back(board, (copy_pos+dir[y]),pos , copy_piece);
-
-            copy_pos += dir[y];
-        }
-        copy_pos = pos;
-    }
-    return (min);
-}
-int black_Kn(int board[], int pos ,int dir[], int depth, int alpha, int beta)
-{
-    int copy_piece, eval, min = INT_MAX;
-    for(int y = 1; y <= dir[0]; y++) {//first index of "dir" gives amount of directions
-        if(board[pos+dir[y]] == 0 || (board[pos+dir[y]] < 10 && board[pos+dir[y]] > 0)) {// move or capture
-            change_pos(board, pos+dir[y], pos, &copy_piece);
-
-            eval = move_gen(board, depth -1, alpha, beta, true);
-            min = (eval < min ? eval : min);
-            beta = (beta < eval ? beta : eval);
-            if( beta <= alpha)
-                break;
-
-            change_pos_back(board, pos+dir[y], pos, copy_piece);
-        }
-    }
-    return (min);
-}
-*/
