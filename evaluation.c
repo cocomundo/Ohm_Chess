@@ -1,9 +1,9 @@
-#include <cstdlib>
-#include <iostream>
+#include <stdio.h>
 
 int evaluation(int board[]) {
     int evaluation = 0;
-    // evaluation of captured pieces
+
+    /* evaluation of captured pieces */
     for(int i = 20; i < 100; i++) {
         switch(board[i]) {
             case 1: evaluation+=100;break;
@@ -21,10 +21,6 @@ int evaluation(int board[]) {
             default: break;
         }
     }
-/*    if(board[64] == 2|| board[65] == 2) {
-        evaluation += 500;
-    }
-*/
-    std::cout << "eval value: " << evaluation << std::endl;
-    return (evaluation);
+    printf("evaluation value: %d\n", evaluation);
+    return evaluation;
 }

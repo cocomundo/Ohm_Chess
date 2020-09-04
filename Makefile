@@ -1,7 +1,7 @@
 # Variables to control Makefile operation
 
-CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++14 -O2
+CC = gcc
+CFLAGS = -Wall -Wextra -g
 
 TARGET_TOOL := chess
 
@@ -10,9 +10,9 @@ all: $(TARGET_TOOL)
 # Targets, needed to bring the executable up to date
 
 $(TARGET_TOOL): main.o move_gen.o evaluation.o board.o
-	$(CXX) $(CXXFLAGS) -o $(TARGET_TOOL) main.o move_gen.o evaluation.o board.o
-main.o: main.cpp move_gen.h board.h
-	$(CXX) $(CXXFLAGS) -c main.cpp 
+	$(CC) $(CFLAGS) -o $(TARGET_TOOL) main.o move_gen.o evaluation.o board.o -lncurses
+main.o: main.c move_gen.h board.h
+	$(CC) $(CFLAGS) -c main.c 
 move_gen.o: move_gen.h evaluation.h board.h
 
 evaluation.o: evaluation.h

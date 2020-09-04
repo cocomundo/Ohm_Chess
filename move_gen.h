@@ -1,6 +1,8 @@
 #ifndef MOVE_GEN_H_INCLUDED
 #define MOVE_GEN_H_INCLUDED
 
+#include <stdbool.h>
+
 //move_gen recursive function
 int move_gen(int board[], int depth, int alpha, int beta, bool black_or_white );
 

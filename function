@@ -1,0 +1,69 @@
+int i=0;
+int k=0;
+int l=0;
+std::cout << "Type '1' to Play against the computer\n";
+std::cin >> i; 
+while( i != 1 ) 
+{
+    std::cout << "Error: This number is not possibleh!\n";  
+    std::cout << "please enter a listed Number\n";
+    std::cout << "Type '1' to Play against the computer:\n";  
+    std::cin >> i; 
+}
+std::cout<<"Type '1' to Play as white, Type '2' to play as black\n";
+std::cin >> i;
+
+while( i != 1 && i != 2 ) 
+{
+    std::cout << "Error: This number is not possible!\n";  
+    std::cout << "please enter a listed Number\n";
+    std::cout << "Type '1' to Play as white, Type '2' to play as black\n";  
+    std::cin >> i; 
+}
+
+if(i=1)
+{
+    inputmove();
+} 
+while(1)//abbruch bei spielende?
+{
+    movegenerator();
+    inputmove();
+}
+
+inputmove()
+{
+showboard();
+std::cout << "Please enter the starting square of your move\n";
+  std::cin >> k;
+while( k < 0 || k > 120 ) 
+{ std::cout << "Error: This square is not possible!\n";  
+  std::cout << "Please enter a starting square\n";
+  std::cin >> k; 
+}
+std::cout << "Please enter the ending square of your move\n";
+  std::cin >> l; 
+while( l < 0 || l > 120 ) 
+{ std::cout << "Error: This square is not possible!\n";  
+  std::cout << "Please enter a ending square\n";
+  std::cin >> l; 
+}
+//is the move legal check
+changeboard(k,l);
+}
+changeboard(k,l)
+{
+board[l]=board[k];
+board[k]=0;
+}
+showboard()
+{
+int i=0;
+for(i=0;i<120;i++)
+{
+if(i%10==0)
+std::cout << "(";
+std::cout << setw(5) << board[i]";
+if(i%10==0)
+std::cout << ")\n";
+}
