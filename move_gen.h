@@ -1,7 +1,7 @@
 #ifndef MOVE_GEN_H_INCLUDED
 #define MOVE_GEN_H_INCLUDED
 
-#define MAXDEPTH 7
+#define MAXDEPTH 3
 #define AB_PRUNE
 #define BENCHMARK
 
