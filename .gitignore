@@ -6,3 +6,5 @@
 *.out
 *.tex
 *.toc 
+*.pdf
+documentation

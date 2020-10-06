@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "evaluation.h"
 
 int evaluation(int board[]) {
     int evaluation = 0;
@@ -21,6 +22,30 @@ int evaluation(int board[]) {
             default: break;
         }
     }
-    printf("evaluation value: %d\n", evaluation);
+
+    if(board[54] >0){
+        evaluation += 10;
+        if(board[54] > 10)
+            evaluation -= 20;
+    }
+
+    if(board[55] >0){
+        evaluation += 10;
+        if(board[55] > 10)
+            evaluation -= 20;
+    }
+
+    if(board[56] >0){
+        evaluation += 10;
+        if(board[56] > 10)
+            evaluation -= 20;
+    }
+
+    if(board[57] >0){
+        evaluation += 10;
+        if(board[57] > 10)
+            evaluation -= 20;
+    }
+
     return evaluation;
 }

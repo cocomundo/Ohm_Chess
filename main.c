@@ -1,67 +1,97 @@
 #include "move_gen.h"
 #include "board.h"
+#include "game.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-/* INT_MIN, INT_MAX */
+
 #include <limits.h>
-#include <curses.h>
-#include <unistd.h>
 
-#define MAXDEPTH 2
-#define KEY_Y 121
 
-void quit(){
-  endwin();
-}
 
 int main()
 {
-    int input_char = 0, eval = 0;
-    clock_t begin = clock();
+    int eval = 0; /* stores the evaluation value of the best move */
+    int ret = 0; /* dummy var for return value checks */
+    bool color_to_move; /* stores the current color to move (toggles each move) */
+    bool color_player; /* stores the color of the player playing against the engine*/
+    int game_state = 1; /* stores the current gamestate, 1 tells that the game is runable */
+    /* 
+     * typedef structure stores:
+     * the start square of the current best move
+     * the end square of the current best move
+     * information if and what kind of special move
+     */
+    MOVE best_move;
+    /* time vars for benchmarking */
+    clock_t start, end;
+    double cpu_time_used;
 
-    /* start the game state machine */
 
-    /* curses initialisieren */
-    initscr ();
-    /* enable key-strokes*/
-    keypad (stdscr, TRUE);
-    /* disable print or pressed key*/
-    noecho();
-
-    atexit(quit);
-    curs_set(0);
-
-    mvaddstr(3, 12, "***Chess Engine - Welcome***");
-    mvaddstr(5, 2, "Do you think you can beat the engine ?");
-    mvaddstr(6, 2, "Start the Game with \"y\"!");
-    mvaddstr(7, 2, "To quit the Game press \"q\" or any other key");
-    if((input_char = getch ()) == 'y'){
-        clear();
-        mvaddstr(5, 2, "Good Luck !");
-        refresh();
-        sleep(2);
-        mvaddstr(5, 2, "Game content");
-        refresh();
-    }else{
-        mvaddstr(5, 2, "Game content");
-        refresh();
-        sleep(2);
+    /* Init curses */
+    ret = init_curses();
+    if(ret == EXIT_FAILURE){
         return 0;
     }
+
+    /* start the game state machine */
+    color_player = game_start();
+
+    /* white always starts the game */
+    color_to_move = true;
+
+    /* draw init board */
+    refresh_board(board);
+
+    /* if the player chooses to play black */
+    if(color_player == true){
+        start = clock();
+        /* engine is called */
+        eval = move_gen(board, MAXDEPTH, INT_MIN, INT_MAX, color_to_move, false,
+            long_castle_white, long_castle_black, short_castle_white,
+            short_castle_black, &best_move);
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        /* move is saved on the board and global rules are checked */
+        make_move(best_move.start_pos, best_move.end_pos, best_move.special,
+            &move_50_rule, &color_to_move, &game_state);
+        /* new position is updated in ncurses */
+        refresh_board(board);
+        /* prints the engine-move and evaluation value */
+        show_move(best_move.start_pos, best_move.end_pos, best_move.special, eval, cpu_time_used);
+    }
+
+    while(game_state == 1){
+        /* Player */
+        get_move_user(&best_move.start_pos, &best_move.end_pos, &best_move.special);
+        /* move is saved on the board and global rules are checked */
+        make_move(best_move.start_pos, best_move.end_pos, best_move.special,
+            &move_50_rule, &color_to_move, &game_state);
+        /* new position is updated in ncurses */
+        refresh_board(board);
+        
+        if(game_state != 1)
+            break;
+
+        start = clock();
+        /* Engine*/
+        eval = move_gen(board, MAXDEPTH, INT_MIN, INT_MAX, color_to_move, false,
+            long_castle_white, long_castle_black, short_castle_white,
+            short_castle_black, &best_move);
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        /* move is saved on the board and global rules are checked */
+        make_move(best_move.start_pos, best_move.end_pos, best_move.special,
+            &move_50_rule, &color_to_move, &game_state);
+        /* new position is updated in ncurses */
+        refresh_board(board);
+        /* prints the engine-move and evaluation value */
+        show_move(best_move.start_pos, best_move.end_pos, best_move.special, eval, cpu_time_used);
+    }
+
+    /* print how the game exited */
+    print_game_exit(game_state, color_player);
     
-    refresh();
-    getch();
-    return 0;
-
-    /* start move generator*/
-    eval = move_gen(board, MAXDEPTH, INT_MIN, INT_MAX, true);
-    printf("endresult: %d\n", eval);
-
-    /* calculate the needed time */
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Needed Time: %lf\n", time_spent);
-
     return 0;
 }
