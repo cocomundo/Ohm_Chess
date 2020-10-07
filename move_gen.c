@@ -47,12 +47,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 board[square] = i;
                                 /* after white move -> black move -> false */
                                 eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                max = (eval > max ? eval : max);
-                                if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = square+dir_wP[1];
                                     best_move->special = i+4;
                                 }
+                                max = (eval > max ? eval : max);
                             }
                             change_pos_back(board, square+dir_wP[1], square, copy_piece);
 
@@ -70,12 +70,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
 
                             /* after white move -> black move -> false */
                             eval = move_gen(board, depth-1, alpha, beta, false, square+dir_wP[2], long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL );
-                            max = (eval > max ? eval : max);
-                            if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = square+dir_wP[2];
                                 best_move->special = 0;
                             }
+                            max = (eval > max ? eval : max);
 
                             change_pos_back(board, square+dir_wP[2], square, copy_piece);
 
@@ -90,12 +90,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
 
                         /* after white move -> black move -> false */
                         eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                        max = (eval > max ? eval : max);
-                        if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                        if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                             best_move->start_pos = square;
                             best_move->end_pos = square+dir_wP[1];
                             best_move->special = 0;
                         }
+                        max = (eval > max ? eval : max);
 
                         change_pos_back(board, square+dir_wP[1], square, copy_piece);
 
@@ -120,12 +120,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 {
                                     board[square] = i;
                                     eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                    max = (eval > max ? eval : max);
-                                    if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                                    if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                         best_move->start_pos = square;
                                         best_move->end_pos = square+dir_wP[y];
                                         best_move->special = 4+i;
                                     }
+                                    max = (eval > max ? eval : max);
                                 }
 
                                 change_pos_back(board, square+dir_wP[y], square, copy_piece);
@@ -144,12 +144,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 change_pos(board, square+dir_wP[y], square, &copy_piece);
 
                                 eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                max = (eval > max ? eval : max);
-                                if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = square+dir_wP[y];
                                     best_move->special = 0;
                                 }
+                                max = (eval > max ? eval : max);
 
                                 change_pos_back(board, square+dir_wP[y], square, copy_piece);
 
@@ -167,12 +167,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                         /* en passant */
                         change_pos_enpassant_white(board, enpassant_square, square, &copy_piece );
                         eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                        max = (eval > max ? eval : max);
-                        if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                        if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                             best_move->start_pos = square;
                             best_move->end_pos = enpassant_square - 10;
                             best_move->special = 1;
                         }
+                        max = (eval > max ? eval : max);
 
                         change_pos_back_enpassant_white(board, enpassant_square, square, copy_piece );
 
@@ -194,12 +194,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             change_pos(board, square+dir_Kn[y], square, &copy_piece);
 
                             eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                            max = (eval > max ? eval : max);
-                            if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = square+dir_Kn[y];
                                 best_move->special = 0;
                             }
+                            max = (eval > max ? eval : max);
 
                             change_pos_back(board, square+dir_Kn[y], square, copy_piece);
 
@@ -225,12 +225,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 change_pos(board, (copy_pos+dir_B[y]), square, &copy_piece);
 
                                 eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                max = (eval > max ? eval : max);
-                                if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = copy_pos+dir_B[y];
                                     best_move->special = 0;
                                 }
+                                max = (eval > max ? eval : max);
 
                                 change_pos_back(board, (copy_pos+dir_B[y]), square, copy_piece);
 
@@ -247,12 +247,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             change_pos(board, copy_pos+dir_B[y], square, &copy_piece);
 
                             eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                            max = (eval > max ? eval : max);
-                            if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = copy_pos+dir_B[y];
                                 best_move->special = 0;
                             }
+                            max = (eval > max ? eval : max);
 
                             change_pos_back(board, copy_pos+dir_B[y], square, copy_piece);
 
@@ -291,12 +291,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                     eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
                                 } 
 
-                                max = (eval > max ? eval : max);
-                                if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = copy_pos+dir_R[y];
                                     best_move->special = 0;
                                 }
+                                max = (eval > max ? eval : max);
 
                                 change_pos_back(board, (copy_pos+dir_R[y]),square , copy_piece);
 
@@ -320,12 +320,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
                             } 
 
-                            max = (eval > max ? eval : max);
-                            if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = copy_pos+dir_R[y];
                                 best_move->special = 0;
                             }
+                            max = (eval > max ? eval : max);
 
                             change_pos_back(board, copy_pos+dir_R[y], square, copy_piece);
 
@@ -355,12 +355,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 change_pos(board, (copy_pos+dir_Q_Ki[y]), square, &copy_piece);
                                 /* after white move -> black move */
                                 eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                max = (eval > max ? eval : max);
-                                if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = copy_pos+dir_Q_Ki[y];
                                     best_move->special = 0;
                                 }
+                                max = (eval > max ? eval : max);
 
                                 change_pos_back(board, (copy_pos+dir_Q_Ki[y]),square , copy_piece);
 
@@ -377,12 +377,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             change_pos(board, copy_pos+dir_Q_Ki[y], square, &copy_piece);
 
                             eval = move_gen(board, depth-1, alpha, beta, false, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                            max = (eval > max ? eval : max);
-                            if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = copy_pos+dir_Q_Ki[y];
                                 best_move->special = 0;
                             }
+                            max = (eval > max ? eval : max);
 
                             change_pos_back(board, copy_pos+dir_Q_Ki[y], square, copy_piece);
 
@@ -407,12 +407,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             change_pos(board,square+dir_Q_Ki[y],square, &copy_piece);
 
                             eval = move_gen(board, depth-1, alpha, beta, false, false, false, long_castle_b, false, short_castle_b, NULL);
-                            max = (eval > max ? eval : max);
-                            if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = copy_pos+dir_Q_Ki[y];
                                 best_move->special = 0;
                             }
+                            max = (eval > max ? eval : max);
 
                             change_pos_back(board,square+dir_Q_Ki[y],square, copy_piece);
 
@@ -432,12 +432,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                         board[95]=0;
 
                         eval = move_gen(board, depth-1, alpha, beta, false, false, false, long_castle_b, false, short_castle_b, NULL);
-                        max = (eval > max ? eval : max);
-                        if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                        if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                             best_move->start_pos = 0;
                             best_move->end_pos = 0;
                             best_move->special = 4;
                         }
+                        max = (eval > max ? eval : max);
 
                         board[91]=4;
                         board[93]=0;
@@ -459,12 +459,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                         board[98]=0;
 
                         eval = move_gen(board, depth-1, alpha, beta, false, false, false, long_castle_b, false, short_castle_b, NULL);
-                        max = (eval > max ? eval : max);
-                        if((depth == MAXDEPTH) && (eval == max) && (best_move != NULL)){
+                        if((depth == MAXDEPTH) && (eval > max) && (best_move != NULL)){
                             best_move->start_pos = 0;
                             best_move->end_pos = 0;
                             best_move->special = 2;
                         }
+                        max = (eval > max ? eval : max);
 
                         board[95]=6;
                         board[96]=0;
@@ -500,12 +500,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             {
                                 board[square] = i;
                                 eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = square+dir_bP[1];
                                     best_move->special = i-6;
                                 }
+                                min = (eval < min ? eval : min);
                             }
 
                             change_pos_back(board, square+dir_bP[1], square, copy_piece);
@@ -523,12 +523,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
 
                             /* after black move -> white move -> true */
                             eval = move_gen(board, depth-1, alpha, beta, true, square+dir_bP[2], long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL); 
-                            min = (eval < min ? eval : min);
-                            if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                 best_move->start_pos = square;
                                 best_move->end_pos = square+dir_bP[2];
                                 best_move->special = 0;
                             }
+                            min = (eval < min ? eval : min);
 
                             change_pos_back(board, square+dir_bP[2], square, copy_piece);
 
@@ -543,12 +543,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
 
                         /* after black move -> white move -> true */
                         eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                        min = (eval < min ? eval : min);
-                        if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                        if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                             best_move->start_pos = square;
                             best_move->end_pos = square+dir_bP[1];
                             best_move->special = 0;
                         }
+                        min = (eval < min ? eval : min);
 
                         change_pos_back(board, square+dir_bP[1], square, copy_piece);
 
@@ -574,12 +574,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                     board[square] = i;
                                     /* after black move -> white move -> true */
                                     eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL); 
-                                    min = (eval < min ? eval : min);
-                                    if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                    if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                         best_move->start_pos = square;
                                         best_move->end_pos = square+dir_bP[y];
                                         best_move->special = i-6;
                                     }
+                                    min = (eval < min ? eval : min);
                                 }
 
                                 change_pos_back(board, square+dir_bP[y], square, copy_piece);
@@ -599,12 +599,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
 
                                 /* after white move -> black move -> false */
                                 eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL); 
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = square+dir_bP[y];
                                     best_move->special = 0;
                                 }
+                                min = (eval < min ? eval : min);
 
                                 change_pos_back(board, square+dir_bP[y], square, copy_piece);
 
@@ -624,12 +624,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                         change_pos_enpassant_black(board, enpassant_square, square, &copy_piece );
                         /* after white move -> black move -> false */
                         eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                        min = (eval < min ? eval : min);
-                        if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                        if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                             best_move->start_pos = square;
                             best_move->end_pos = enpassant_square + 10;
                             best_move->special = 1;
                         }
+                        min = (eval < min ? eval : min);
 
                         change_pos_back_enpassant_black(board, enpassant_square, square, copy_piece );
 
@@ -652,12 +652,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
 
                                 /* after white move -> black move -> false */
                                 eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = square+dir_Kn[y];
                                     best_move->special = 0;
                                 }
+                                min = (eval < min ? eval : min);
 
                                 change_pos_back(board, square+dir_Kn[y], square, copy_piece);
 
@@ -682,12 +682,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                     change_pos(board, (copy_pos+dir_B[y]), square, &copy_piece);
 
                                     eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                    min = (eval < min ? eval : min);
-                                    if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                    if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                         best_move->start_pos = square;
                                         best_move->end_pos = copy_pos+dir_B[y];
                                         best_move->special = 0;
                                     }
+                                    min = (eval < min ? eval : min);
 
                                     change_pos_back(board, (copy_pos+dir_B[y]), square , copy_piece);
 
@@ -704,12 +704,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 change_pos(board, (copy_pos+dir_B[y]), square, &copy_piece);
 
                                 eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = copy_pos+dir_B[y];
                                     best_move->special = 0;
                                 }
+                                min = (eval < min ? eval : min);
 
                                 change_pos_back(board, (copy_pos+dir_B[y]), square, copy_piece);
 
@@ -744,12 +744,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                         eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
                                     } 
 
-                                    min = (eval < min ? eval : min);
-                                    if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                    if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                         best_move->start_pos = square;
                                         best_move->end_pos = copy_pos+dir_R[y];
                                         best_move->special = 0;
                                     }
+                                    min = (eval < min ? eval : min);
 
                                     change_pos_back(board, (copy_pos+dir_R[y]), square , copy_piece);
 
@@ -773,12 +773,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                     eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
                                 } 
 
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = copy_pos+dir_R[y];
                                     best_move->special = 0;
                                 }
+                                min = (eval < min ? eval : min);
 
                                 change_pos_back(board, (copy_pos+dir_R[y]), square, copy_piece);
 
@@ -806,12 +806,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                     change_pos(board, (copy_pos+dir_Q_Ki[y]), square, &copy_piece);
 
                                     eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                    min = (eval < min ? eval : min);
-                                    if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                    if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                         best_move->start_pos = square;
                                         best_move->end_pos = copy_pos+dir_Q_Ki[y];
                                         best_move->special = 0;
                                     }
+                                    min = (eval < min ? eval : min);
 
                                     change_pos_back(board, (copy_pos+dir_Q_Ki[y]), square , copy_piece);
 
@@ -828,12 +828,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 change_pos(board, (copy_pos+dir_Q_Ki[y]), square, &copy_piece);
 
                                 eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, long_castle_b, short_castle_w, short_castle_b, NULL);
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = copy_pos+dir_Q_Ki[y];
                                     best_move->special = 0;
                                 }
+                                min = (eval < min ? eval : min);
 
                                 change_pos_back(board, (copy_pos+dir_Q_Ki[y]), square, copy_piece);
 
@@ -858,12 +858,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                                 change_pos(board, square+dir_Q_Ki[y], square, &copy_piece);
 
                                 eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, false, short_castle_w, false, NULL);
-                                min = (eval < min ? eval : min);
-                                if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                                if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                     best_move->start_pos = square;
                                     best_move->end_pos = square+dir_Q_Ki[y];
                                     best_move->special = 0;
                                 }
+                                min = (eval < min ? eval : min);
 
                                 change_pos_back(board,square+dir_Q_Ki[y],square, copy_piece);
 
@@ -883,12 +883,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             board[25]=0;
 
                             eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, false, short_castle_w, false, NULL);
-                            min = (eval < min ? eval : min);
-                            if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                 best_move->start_pos = 0;
                                 best_move->end_pos = 0;
                                 best_move->special = 5;
                             }
+                            min = (eval < min ? eval : min);
 
                             board[21]=14;
                             board[23]=0;
@@ -911,12 +911,12 @@ int move_gen( int *board, int depth, int alpha, int beta, bool black_or_white,
                             board[28]=0;
 
                             eval = move_gen(board, depth-1, alpha, beta, true, false, long_castle_w, false, short_castle_w, false, NULL);
-                            min = (eval < min ? eval : min);
-                            if((depth == MAXDEPTH) && (eval == min) && (best_move != NULL)){
+                            if((depth == MAXDEPTH) && (eval < min) && (best_move != NULL)){
                                 best_move->start_pos = 0;
                                 best_move->end_pos = 0;
                                 best_move->special = 3;
                             }
+                            min = (eval < min ? eval : min);
 
                             board[25]=16;
                             board[26]=0;

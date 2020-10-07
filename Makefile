@@ -1,7 +1,7 @@
 # Variables to control Makefile operation
 
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -O2
 
 ALL_SOURCE_FILES = *.c
 TARGET_TOOL := chess

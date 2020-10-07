@@ -60,6 +60,7 @@ int main()
         refresh_board(board);
         /* prints the engine-move and evaluation value */
         show_move(best_move.start_pos, best_move.end_pos, best_move.special, eval, cpu_time_used);
+        count = 0;
     }
 
     while(game_state == 1){
@@ -88,6 +89,7 @@ int main()
         refresh_board(board);
         /* prints the engine-move and evaluation value */
         show_move(best_move.start_pos, best_move.end_pos, best_move.special, eval, cpu_time_used);
+        count = 0;
     }
 
     /* print how the game exited */
