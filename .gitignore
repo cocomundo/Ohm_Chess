@@ -5,5 +5,10 @@
 *.log
 *.out
 *.toc 
-*.pdf
-documentation
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.dvi
+*.run.xml
+*.synctex.gz
