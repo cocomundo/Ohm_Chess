@@ -10,7 +10,7 @@ ncurses
 
 ### To build this project:
 ```
-$ ch Ohm_Chess
+$ cd Ohm_Chess
 $ make
 ```
 Authors: Thomas Hollmann, Hannes Dürr
