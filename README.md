@@ -1,4 +1,16 @@
-This is our little chess project
-the readme is still work in progress
+# Chess Engine - Ohm Chess
 
-Author: Thomas Hollmann, Hannes Dürr
+This is an chess engine based on minimax and a/b-pruning, represented by a curses chessboard.
+a/b-pruning and performance analysis are switchable 
+
+### Dependencys:
+
+ncurses
+
+
+### To build this project:
+```
+$ ch Ohm_Chess
+$ make
+```
+Authors: Thomas Hollmann, Hannes Dürr
