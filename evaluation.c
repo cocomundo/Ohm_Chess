@@ -2,8 +2,9 @@
 #include "evaluation.h"
 
 int evaluation(int board[], int material) {
-    int eval=material;
+    int eval=0;
     /* evaluation of captured pieces */
+    eval=material;
     
     if(board[54] >0){
         eval += 10;
