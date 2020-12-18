@@ -13,6 +13,15 @@ extern int short_castle_white;
 extern int short_castle_black;
 extern int move_50_rule;
 
+extern unsigned long long int hashkey_mainboard_pos;
+
+#ifdef HASHTABLE
+extern unsigned long long int random_number[1600];
+
+void random_number_generator();
+void create_startposition_hashkey();
+#endif
+
 int lega_move_check_player();
 void make_move(int start_pos, int end_pos, int special_move,
     int *move_rule, bool *w_b, int *game_state);

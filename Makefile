@@ -8,7 +8,7 @@ TARGET_TOOL := chess
 
 all: $(TARGET_TOOL)
 
-$(TARGET_TOOL):
+$(TARGET_TOOL): *.c *.h
 	$(CC) $(CFLAGS) -o $(TARGET_TOOL) $(ALL_SOURCE_FILES) -lncurses
 
 clean:

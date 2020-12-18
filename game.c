@@ -5,6 +5,7 @@
 
 #include <curses.h>
 #include "move_gen.h"
+#include "board.h"
 void quit()
 {
   endwin();
@@ -16,7 +17,9 @@ void show_move(int start_pos, int end_pos, int special, int eval, double time)
     mvprintw(39, 12, "The engine moved from %d to %d and rated it %2.2lf (special move : %d)", start_pos, end_pos, eval_double, special);
     #ifdef BENCHMARK
     mvprintw(40, 12, "The calculation took: %.2lf sec", time);
-    mvprintw(41, 12, "the movegenerator analyzed %2.2lf positions at a depth of %d", count, MAXDEPTH);
+    mvprintw(41, 12, "the movegenerator analyzed %2.0lf positions (%.1lf knodes/s) at a depth of %d", count,count/1000/time ,MAXDEPTH);
+    mvprintw(42, 12, "The Current Hashkey is: %llu", hashkey_mainboard_pos);
+    mvprintw(43, 12, "The number of Transpositiontable hits: %2.0lf", transpositiontable_hit_count);
     #endif
     refresh();
 }
@@ -342,6 +345,7 @@ void refresh_board(int board[])
     mvaddstr(OFFSET_Y+6, OFFSET_X+54, "7 == promote to Bishop");
     mvaddstr(OFFSET_Y+7, OFFSET_X+54, "8 == promote to Rook");
     mvaddstr(OFFSET_Y+8, OFFSET_X+54, "9 == promote to Queen");
+    mvaddstr(OFFSET_Y+8, OFFSET_X+54, "9 == promote to Queen");
 
     attron(COLOR_PAIR(RED_P));
     for(int i = 0; i<8; i++){
@@ -485,7 +489,7 @@ bool game_start(void)
     mvaddstr(3, 12, "*** Chess Engine - Welcome ***");
     mvaddstr(5, 6, "Do you think you can beat the engine ?");
     refresh();
-    sleep(1);
+    sleep(3);
     clear();
 
     /* Choose color  */

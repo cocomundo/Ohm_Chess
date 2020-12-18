@@ -13,7 +13,7 @@
 int main()
 {
     int eval = 0; /* stores the evaluation value of the best move */
-    int ret = 0; /* dummy var for return value checks */
+    int ret = 0; /* var for return value checks */
     bool color_to_move; /* stores the current color to move (toggles each move) */
     bool color_player; /* stores the color of the player playing against the engine*/
     int game_state = 1; /* stores the current gamestate, 1 tells that the game is runable */
@@ -44,13 +44,19 @@ int main()
     /* draw init board */
     refresh_board(board);
 
+    /* Init hashtable*/
+    #ifdef HASHTABLE
+    random_number_generator();
+    create_startposition_hashkey();
+    #endif
+
     /* if the player chooses to play black */
     if(color_player == true){
         start = clock();
         /* engine is called */
         eval = move_gen(board, MAXDEPTH, INT_MIN, INT_MAX, color_to_move, false,
             long_castle_white, long_castle_black, short_castle_white,
-            short_castle_black, &best_move);
+            short_castle_black, &best_move, 0, hashkey_mainboard_pos);
         end = clock();
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
         /* move is saved on the board and global rules are checked */
@@ -79,7 +85,7 @@ int main()
         /* Engine*/
         eval = move_gen(board, MAXDEPTH, INT_MIN, INT_MAX, color_to_move, false,
             long_castle_white, long_castle_black, short_castle_white,
-            short_castle_black, &best_move);
+            short_castle_black, &best_move, 0, hashkey_mainboard_pos);
         end = clock();
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
         /* move is saved on the board and global rules are checked */
